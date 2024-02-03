@@ -178,20 +178,90 @@ int main()
 		std::cout << ptr + i << '\n';*/
 
 
-	int* arr{ new int[4] {3, 4, 6} };
+	/*int* arr{ new int[4] {3, 4, 6} };
 	
 	std::cout << arr << '\n';
 	std::cout << *arr << '\n';
 	std::cout << *(arr + 1) << '\n';
 	std::cout << *(arr + 2) << '\n';
 	std::cout << *(arr + 3) << '\n';
-	std::cout << *(arr + 4) << '\n';		// !!
+	std::cout << *(arr + 4) << '\n';*/		// !!
 
 
 	// 1. Как работает оператор []   std::cout << arr[2];
 	// 2. Почему индексация массива начинается с 0
 
+	// std::cout << arr[2];			// *(arr + 2)
 
+	// arr[i]		*(arr + i)
+
+
+
+	/*int a = 5;
+	int* ptr = &a;
+	std::cout << ptr << '\n';*/
+
+	// std::cout << ptr[3];			// *(ptr + 3)
+
+	/*for (int i{}; i < 20; ++i)
+		std::cout << ptr[i] << '\n';*/
+
+	// std::cout << ptr[30];
+
+
+
+
+
+	// ==== static nD arrays
+	//int arr[2][4]
+	//{
+	//	{3, 4, 5, 6 },
+	//	{7, 8, 9, 0 }
+	//};
+	//std::cout << arr << '\n';
+
+	//std::cout << arr[1][2] << '\n';		// arr + 4 * 1
+
+	// int arr[a][b]
+	// arr[i][j]		--->    arr + sizeof(int) * b * i + sizeof(int) * j
+
+
+
+
+	// ==== dynamic nD arrays
+
+	//const int rows = 2;
+	//const int cols = 4;
+
+
+	//int* *arr = new int*[rows];
+	//for (int i{}; i < rows; ++i)
+	//	arr[i] = new int[cols] {};
+
+	//arr[0][2] = 10;
+
+
+	//// arr[1][3] = 7;
+	//*(*(arr + 1) + 3) = 7;
+
+
+	//for (int i{}; i < rows; ++i)
+	//{
+	//	for (int j{}; j < cols; ++j)
+	//		std::cout << arr[i][j] << ' ';
+
+	//	std::cout << '\n';
+	//}
+
+
+
+
+
+	
+
+
+
+	 
 
 
 

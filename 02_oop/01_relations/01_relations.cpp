@@ -163,46 +163,150 @@
 // 3. Первый объект не управляет жизнью второго объекта (и наоборот)
 // 4. Первый объект может знать о существовании второго (и наоборот)
 
-class Group
-{
-private:
-	std::string title;
+//#include <vector>
+//
+//class Group
+//{
+//private:
+//	std::string title;
+//
+//public:
+//	Group(const std::string& title):
+//		title{title}
+//	{}
+//
+//	std::string getTitle() const
+//	{
+//		return this->title;
+//	}
+//};
+//
+//
+//
+//class Teacher
+//{
+//private:
+//	std::string name;
+//	std::vector<Group*> groups;
+//public:
+//	Teacher(const std::string& name):
+//		name{name}
+//	{}
+//
+//	void addGroup(Group* g)
+//	{
+//		groups.push_back(g);
+//	}
+//
+//	void show()
+//	{
+//		std::cout << "name: " << this->name << '\n';
+//		if (this->groups.size() == 0)
+//			std::cout << "no groups\n";
+//		else
+//		{
+//			for (int i{}; i < this->groups.size(); ++i)
+//				std::cout << this->groups[i]->getTitle() << '\n';
+//		}
+//	}
+//};
+//
+//
+//int main()
+//{
+//	Teacher t1{ "name_1" };
+//	Teacher t2{ "name_2" };
+//	Teacher t3{ "name_3" };
+//	Teacher t4{ "name_4" };
+//
+//	Group g1{ "group_1" };
+//	Group g2{ "group_2" };
+//	Group g3{ "group_3" };
+//	Group g4{ "group_4" };
+//	Group g5{ "group_5" };
+//
+//	t2.addGroup(&g3);
+//	t2.addGroup(&g4);
+//	t2.addGroup(&g5);
+//
+//	t2.show();
+//
+//
+//
+//	return 0;
+//}
 
+
+// --- бинарная, n-арная
+// --- однонаправленная, двунаправленная
+
+
+
+
+
+// --- рефлексивная
+
+//class Category
+//{
+//private:
+//	std::string title;
+//	Category* parentCategory = nullptr;
+//	// Category* childCategories;
+//public:
+//	Category(const std::string title) :
+//		title{ title }
+//	{}
+//	void setParent(Category* parent)
+//	{
+//		this->parentCategory = parent;
+//	}
+//};
+//
+//int main()
+//{
+//	Category a{ "cat_a" };
+//	Category b{ "cat_b" };
+//	Category c{ "cat_c" };
+//
+//	b.setParent(&a);
+//	c.setParent(&a);
+//
+//	return 0;
+//}
+
+
+
+// --- неявная
+//class Category
+//{
+//	int id;
+//	std::string title;
+//};
+//
+//class Product
+//{
+//	int id;
+//	std::string title;
+//	int categoryId;
+//};
+
+
+
+
+
+// ======= Зависимость (использует в качестве типа возврата методов или типа параметров)
+class Tree;
+
+class NPC;
+
+class Stone;
+
+class MapGenerator
+{
 public:
-	Group(const std::string& title):
-		title{title}
-	{}
+	Tree generateTree();
+
+	void setStoneToMap(Stone* stone);
 };
-
-
-
-class Teacher
-{
-private:
-	std::string name;
-	Group* groups;				//  
-public:
-	Teacher(const std::string& name):
-		name{name}
-	{}
-};
-
-
-int main()
-{
-	Teacher t1{ "name_1" };
-	Teacher t2{ "name_2" };
-	Teacher t3{ "name_3" };
-	Teacher t4{ "name_4" };
-
-	Group g1{ "group_1" };
-	Group g2{ "group_2" };
-	Group g3{ "group_3" };
-	Group g4{ "group_4" };
-	Group g5{ "group_5" };
-
-	return 0;
-}
-
 
 
