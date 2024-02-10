@@ -1,0 +1,12 @@
+﻿Кол-во рулонов каждого вида
+Смета на заккупку обоев
+
+
+Flat
+Room
+Wallpaper roll
+Window
+Door
+Wall
+
+
