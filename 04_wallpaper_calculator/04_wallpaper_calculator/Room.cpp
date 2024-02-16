@@ -1,9 +1,9 @@
 #include "Room.h"
 
-Room::Room(const std::string& title, short wallCount):
+Room::Room(const std::string& title):
 	title{ title },
-	wallCount{ wallCount },
-	walls{ new Wall[wallCount] }						// TODO: array init???
+	wallCount{},
+	walls{ nullptr }						// TODO: array init???
 {}
 
 const std::string& Room::getTitle() const
