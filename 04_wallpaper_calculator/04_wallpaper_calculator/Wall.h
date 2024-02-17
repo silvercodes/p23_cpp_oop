@@ -1,14 +1,14 @@
 #pragma once
 #include <iostream>
+#include <vector>
 #include "Useless.h"
 
 class Wall
 {
 private:
-	float height;			// in meters
-	float width;			// in meters
-	short uCount;
-	Useless** uselesses;
+	float height;						// in meters
+	float width;						// in meters
+	std::vector<Useless*> uselesses;
 
 
 public:

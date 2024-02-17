@@ -129,7 +129,9 @@
   <ItemGroup>
     <ClCompile Include="04_wallpaper_calculator.cpp" />
     <ClCompile Include="Calculator.cpp" />
+    <ClCompile Include="Roll.cpp" />
     <ClCompile Include="Room.cpp" />
+    <ClCompile Include="structures.h" />
     <ClCompile Include="Useless.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
@@ -138,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calculator.h" />
+    <ClInclude Include="Roll.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Useless.h" />
     <ClInclude Include="Wall.h" />

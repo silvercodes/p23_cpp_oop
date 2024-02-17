@@ -30,6 +30,12 @@
     <ClCompile Include="Useless.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Roll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="structures.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="notes.txt" />
@@ -45,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Useless.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Roll.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
