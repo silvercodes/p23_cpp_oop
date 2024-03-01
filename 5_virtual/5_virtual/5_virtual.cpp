@@ -651,8 +651,9 @@
 //bool(*fptr3)(int) = [](int n) {return n % 2 == 0; };
 
 
-
-
+//bool isEven(int n) { return n % 2 == 0; }
+//bool isDivThree(int n) { return n % 3 == 0; }
+//
 //int sum(int* arr, int count, bool(*predicate)(int))
 //{
 //	int res{};
@@ -676,8 +677,6 @@
 //	int result2 = sum(arr, 6, [](int n) {return n % 2 > 0; });
 //	int result3 = sum(arr, 6, [](int n) {return n > 0; });
 //
-//	
-//
 //	return 0;
 //}
 
@@ -686,12 +685,110 @@
 
 
 // EXAMPLE
+//#include <vector>
+//#include <format>
+//
+//typedef void (*handler)(std::string);
+//
+//
+//
+//void sendToTelegram(std::string message)
+//{
+//	std::cout << "Telegram: " << message << '\n';
+//}
+//
+//void sendSMS(std::string message)
+//{
+//	std::cout << "SMS: " << message << '\n';
+//}
+//
+//void sendEmail(std::string message)
+//{
+//	std::cout << "Email: " << message << '\n';
+//}
+//
+//
+//
+//class Account
+//{
+//private:
+//	int id;
+//	int sum;
+//	std::vector<handler> depositHandlers;
+//	std::vector<handler> withdrawHandlers;
+//
+//public:
+//	Account(int id, int sum):
+//		id{id},
+//		sum{sum}
+//	{}
+//
+//	void addDepositHandler(handler h)
+//	{
+//		depositHandlers.push_back(h);
+//	}
+//
+//	void addWithdrawHandler(handler h)
+//	{
+//		withdrawHandlers.push_back(h);
+//	}
+//
+//	void deposit(int sum)
+//	{
+//		this->sum += sum;
+//
+//		
+//		std::string message = "message from account";
+//
+//		for (int i = 0; i < depositHandlers.size(); ++i)
+//			depositHandlers[i](message);
+//	}
+//
+//	void withdraw(int sum)
+//	{
+//		if (this->sum < sum)
+//		{
+//			for (int i = 0; i < withdrawHandlers.size(); ++i)
+//				withdrawHandlers[i]("Withdraw error");
+//		}
+//		else
+//		{
+//			this->sum -= sum;
+//
+//			for (int i = 0; i < withdrawHandlers.size(); ++i)
+//				withdrawHandlers[i]("Withdraw success");
+//		}
+//	}
+//};
+//
+//
+//int main()
+//{
+//	Account acc{ 102, 1000 };
+//	acc.addDepositHandler(sendSMS);
+//	acc.addDepositHandler(sendEmail);
+//	acc.addWithdrawHandler(sendToTelegram);
+//
+//
+//	acc.deposit(100);
+//	acc.deposit(100);
+//	acc.deposit(100);
+//
+//	acc.withdraw(700);
+//
+//}
+
+
+
+
+
+
+
+
+
 #include <vector>
-#include <format>
 
 typedef void (*handler)(std::string);
-
-
 
 void sendToTelegram(std::string message)
 {
@@ -709,56 +806,69 @@ void sendEmail(std::string message)
 }
 
 
+class Event
+{
+private:
+	std::vector<handler> handlers;
+public:
+	void addHandler(handler h)
+	{
+		handlers.push_back(h);
+	}
+	void Emit(std::string message)
+	{
+		for (int i = 0; i < handlers.size(); ++i)
+			handlers[i](message);
+	}
+};
+
 
 class Account
 {
 private:
 	int id;
 	int sum;
-	std::vector<handler> depositHandlers;
+	//
+	//
 
 public:
+	Event withdrawSuccessEvent;
+	Event withdrawErrorEvent;
+
 	Account(int id, int sum):
-		id{id},
-		sum{sum}
+	id{id},
+	sum{sum}
 	{}
-
-	void addDepositHandler(handler h)
-	{
-		depositHandlers.push_back(h);
-	}
-
-	void deposit(int sum)
-	{
-		this->sum += sum;
-
-		
-		std::string message = "message from account";
-
-		for (int i = 0; i < depositHandlers.size(); ++i)
-			depositHandlers[i](message);
-	}
 
 	void withdraw(int sum)
 	{
+		if (this->sum < sum)
+		{
+			withdrawErrorEvent.Emit("withdraw error");
+		}
+		else
+		{
+			this->sum -= sum;
+
+			withdrawSuccessEvent.Emit("withdraw success");
+		}
 
 	}
 };
 
 
+
 int main()
 {
-	Account acc{ 102, 1000 };
-	acc.addDepositHandler(sendSMS);
-	acc.addDepositHandler(sendEmail);
+	Account acc{ 121, 1000 };
+	acc.withdrawErrorEvent.addHandler(sendEmail);
+	acc.withdrawErrorEvent.addHandler(sendSMS);
+	acc.withdrawSuccessEvent.addHandler(sendToTelegram);
+
+	acc.withdraw(7000);
 
 
-	acc.deposit(100);
-	acc.deposit(100);
-	acc.deposit(100);
-
+	return 0;
 }
-
-
 
 
