@@ -786,89 +786,199 @@
 
 
 
+//#include <vector>
+//
+//typedef void (*handler)(std::string);
+//
+//void sendToTelegram(std::string message)
+//{
+//	std::cout << "Telegram: " << message << '\n';
+//}
+//
+//void sendSMS(std::string message)
+//{
+//	std::cout << "SMS: " << message << '\n';
+//}
+//
+//void sendEmail(std::string message)
+//{
+//	std::cout << "Email: " << message << '\n';
+//}
+//
+//
+//class Event
+//{
+//private:
+//	std::vector<handler> handlers;
+//public:
+//	void addHandler(handler h)
+//	{
+//		handlers.push_back(h);
+//	}
+//	void Emit(std::string message)
+//	{
+//		for (int i = 0; i < handlers.size(); ++i)
+//			handlers[i](message);
+//	}
+//};
+//
+//
+//class Account
+//{
+//private:
+//	int id;
+//	int sum;
+//	//
+//	//
+//
+//public:
+//	Event withdrawSuccessEvent;
+//	Event withdrawErrorEvent;
+//
+//	Account(int id, int sum):
+//	id{id},
+//	sum{sum}
+//	{}
+//
+//	void withdraw(int sum)
+//	{
+//		if (this->sum < sum)
+//		{
+//			withdrawErrorEvent.Emit("withdraw error");
+//		}
+//		else
+//		{
+//			this->sum -= sum;
+//
+//			withdrawSuccessEvent.Emit("withdraw success");
+//		}
+//
+//	}
+//};
+//
+//
+//
+//int main()
+//{
+//	Account acc{ 121, 1000 };
+//	acc.withdrawErrorEvent.addHandler(sendEmail);
+//	acc.withdrawErrorEvent.addHandler(sendSMS);
+//	acc.withdrawSuccessEvent.addHandler(sendToTelegram);
+//
+//	acc.withdraw(7000);
+//
+//
+//	return 0;
+//}
+
+
+
+
+
+
+
+#include <thread>
+#include <chrono>
 #include <vector>
+#include <string>
+#include <functional>
 
-typedef void (*handler)(std::string);
 
-void sendToTelegram(std::string message)
+
+void sleep(int milliseconds)
 {
-	std::cout << "Telegram: " << message << '\n';
-}
-
-void sendSMS(std::string message)
-{
-	std::cout << "SMS: " << message << '\n';
-}
-
-void sendEmail(std::string message)
-{
-	std::cout << "Email: " << message << '\n';
+	std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }
 
 
-class Event
+class ProductRow
 {
 private:
-	std::vector<handler> handlers;
-public:
-	void addHandler(handler h)
-	{
-		handlers.push_back(h);
-	}
-	void Emit(std::string message)
-	{
-		for (int i = 0; i < handlers.size(); ++i)
-			handlers[i](message);
-	}
-};
+	static int maxId;
 
-
-class Account
-{
-private:
 	int id;
-	int sum;
-	//
-	//
+	std::string title;
+	int count;
 
 public:
-	Event withdrawSuccessEvent;
-	Event withdrawErrorEvent;
-
-	Account(int id, int sum):
-	id{id},
-	sum{sum}
+	ProductRow(std::string title):
+		id{ProductRow::maxId++},
+		title{title},
+		count{}
 	{}
 
-	void withdraw(int sum)
-	{
-		if (this->sum < sum)
-		{
-			withdrawErrorEvent.Emit("withdraw error");
-		}
-		else
-		{
-			this->sum -= sum;
+	int getId() { return this->id; }
 
-			withdrawSuccessEvent.Emit("withdraw success");
-		}
-
-	}
+	void addCount(int count) { this->count += count; }
 };
+
+int ProductRow::maxId = 1;
+
+ //typedef bool (*predicate)(ProductRow*);
+
+class Storage
+{
+private:
+	std::vector<ProductRow> rows;
+
+	ProductRow* find(std::function<bool(ProductRow*)> p)
+	{
+		for (int i{}; i < rows.size(); ++i)
+			if (p(&rows[i]))
+				return &rows[i];
+
+		return nullptr;
+	}
+
+
+public:
+	Storage(const std::vector<std::string>& titles)
+	{
+		for (int i{}; i < titles.size(); ++i)
+			rows.push_back({ titles[i] });
+	}
+
+	void addProduct(int productId, int count)
+	{
+		 ProductRow* pr = find([productId](ProductRow* p) { return p->getId() == productId; });
+
+		if (pr == nullptr)
+		{
+			// TODO: emit event 
+			return;
+		}
+
+		pr->addCount(count);
+
+		// TODO: emit event
+	}
+
+
+
+
+
+
+
+	// Product[]
+
+	// void addProduct(int productId, int count)
+
+	// void extractProduct(int productId, int count)
+
+
+};
+
+
 
 
 
 int main()
 {
-	Account acc{ 121, 1000 };
-	acc.withdrawErrorEvent.addHandler(sendEmail);
-	acc.withdrawErrorEvent.addHandler(sendSMS);
-	acc.withdrawSuccessEvent.addHandler(sendToTelegram);
+	std::vector<std::string> titles{ "prod_1", "prod_2", "prod_3", "prod_4", "prod_5", "prod_6", };
 
-	acc.withdraw(7000);
+	Storage storage{ titles };
 
+	storage.addProduct(2, 100);
 
 	return 0;
 }
-
-
