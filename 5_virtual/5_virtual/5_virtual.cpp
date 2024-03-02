@@ -891,6 +891,59 @@ void sleep(int milliseconds)
 }
 
 
+
+class Emitter
+{
+
+};
+
+class EventPayload
+{
+
+};
+
+typedef void (*handler)(Emitter*, EventPayload*);
+
+class Event
+{
+private:
+	std::vector<handler> handlers;
+public:
+	void addHandler(handler h)
+	{
+		handlers.push_back(h);
+	}
+	void Emit(Emitter* emitter, EventPayload* payload = nullptr)
+	{
+		for (int i = 0; i < handlers.size(); ++i)
+			handlers[i](emitter, payload);
+	}
+};
+
+
+
+
+// Пример использования
+//class UserHoHoPayload : public EventPayload
+//{
+//
+//};
+//
+//class User: public Emitter
+//{
+//public:
+//	Event ev1{};
+//
+//	void m()
+//	{
+//		ev1.Emit(this, new UserHoHoPayload{});
+//	}
+//};
+
+
+
+
+
 class ProductRow
 {
 private:
@@ -901,9 +954,9 @@ private:
 	int count;
 
 public:
-	ProductRow(std::string title):
-		id{ProductRow::maxId++},
-		title{title},
+	ProductRow(std::string title) :
+		id{ ProductRow::maxId++ },
+		title{ title },
 		count{}
 	{}
 
@@ -914,17 +967,27 @@ public:
 
 int ProductRow::maxId = 1;
 
- //typedef bool (*predicate)(ProductRow*);
+class ProductRowChangingPayload: public EventPayload
+{
+public:
+	ProductRow* productRow;
+	int diff;
 
-class Storage
+	ProductRowChangingPayload(ProductRow* productRow, int diff):
+		productRow{productRow},
+		diff{diff}
+	{}
+};
+
+class Storage: Emitter
 {
 private:
 	std::vector<ProductRow> rows;
 
-	ProductRow* find(std::function<bool(ProductRow*)> p)
+	ProductRow* find(std::function<bool(ProductRow*)> predicate)
 	{
 		for (int i{}; i < rows.size(); ++i)
-			if (p(&rows[i]))
+			if (predicate(&rows[i]))
 				return &rows[i];
 
 		return nullptr;
@@ -932,6 +995,9 @@ private:
 
 
 public:
+	Event addProductSuccessEvent{};
+	Event addProductErrorEvent{};
+
 	Storage(const std::vector<std::string>& titles)
 	{
 		for (int i{}; i < titles.size(); ++i)
@@ -944,13 +1010,15 @@ public:
 
 		if (pr == nullptr)
 		{
-			// TODO: emit event 
+			addProductErrorEvent.Emit(this);
+
+
 			return;
 		}
 
 		pr->addCount(count);
 
-		// TODO: emit event
+		addProductSuccessEvent.Emit(this, new ProductRowChangingPayload{pr, count});
 	}
 
 
@@ -969,16 +1037,50 @@ public:
 };
 
 
+void testHandler(Emitter* emitter, EventPayload* payload)
+{
+	std::cout << "hello from handler\n";
 
+	ProductRowChangingPayload* data = static_cast<ProductRowChangingPayload*>(payload);
+
+	std::cout << data->diff << '\t' << data->productRow->getId() << '\n';
+
+
+}
 
 
 int main()
 {
+	/*int factor = 2;
+	std::function<void(int, int)> fptr = [factor](int a, int b) {std::cout << (a + b) * factor; };*/
+
+
+
+
 	std::vector<std::string> titles{ "prod_1", "prod_2", "prod_3", "prod_4", "prod_5", "prod_6", };
 
 	Storage storage{ titles };
+	storage.addProductSuccessEvent.addHandler(testHandler);
+	storage.addProductErrorEvent.addHandler(
+		[]
+		(Emitter* e, EventPayload* p)
+		{
+			std::cout << "product not found...";
+		});
+
+
 
 	storage.addProduct(2, 100);
+	sleep(1000);
+	storage.addProduct(4, 500);
+	sleep(3000);
+	storage.addProduct(2, 200);
+	sleep(3);
+	storage.addProduct(12, 200);
+
+
+
+
 
 	return 0;
 }
